@@ -8,7 +8,9 @@ Year: 2019
 --------
 **Purpose:**
 
-The purpose of this project is to demonstrate abilities of connecting and using Third-Party APIs.
+Browse different climbing routes, news, and weather information for current location as well as desired search location. There is also an ability to save routes and later revisit.
+
+The purpose of this project is to demonstrate abilities of connecting and using Third-Party APIs. 
 
 --------
 **Technology:**
