@@ -10,27 +10,44 @@ Course: SEI-Flex (2019)
 ////////////////////////////////
 // API Setup
 ////////////////////////////////
-
+  
+  const idArr = [`NWY1MjU4NmU2NWQyNjhiYzQwMjRhNzFkN2E4NjgzODc=`, 'MjAwNDU1NDUxLWQ3ZWJjNzk3MmVjODEyODhlZTgxYjFkN2U4MWE3NDI1']; // openWeather, Mountain Project
+  
   // Weather 
   const weatherBase = `http://api.openweathermap.org/data/2.5/weather?`;
   const forecastBase = `http://api.openweathermap.org/data/2.5/forecast?`
-  const id = `NWY1MjU4NmU2NWQyNjhiYzQwMjRhNzFkN2E4NjgzODc=`;
-  const dcId = window.atob(id);
-  const fullId = `APPID=${dcId}`;
+  const fullWeatherId = `APPID=${window.atob(idArr[0])}`;
   const queryStarter = `q=`;
   const latStarter = `lat=`;
-  const longStarter = `long=`;
+  const longStarter = `lon=`;
   let locationLat = `40`;
   let locationLong = `-74`
   let inputLocation = `new york`; // lowercase
   let currentPos = 0;
 
-  let fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
-  
+  let fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullWeatherId;
   let fullWeatherPathCurrCoord = weatherBase + latStarter + locationLat + `&` + longStarter + locationLong; 
+  let fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullWeatherId;
 
-  let fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullId;
-
+  
+  
+  // Mountain Project
+  const mpBase = `https://www.mountainproject.com/data/`;
+  const qGetRoutes = `get-routes?`;
+  const qGetRoutesLatLong = `get-routes-for-lat-lon?`;
+  let routeIds = `105748391,105750454,105749956`;
+  let minDiff = `5.6`;
+  let maxDiff = `5.10`;
+  const difficultyRange = `minDiff=${minDiff}&maxDiff=${maxDiff}`;
+  let maxDistance = `10`;
+  const mpMaxDistance = `maxDistance=${maxDistance}`;
+  const qRouteIds = `routeIds=${routeIds}`;
+  const fullMPId = `key=${window.atob(idArr[1])}`;
+  
+  let fullMPPathRoutesLatLong = mpBase + fullMPId + `&` + qGetRoutesLatLong;
+  let fullMPPathRoutes = mpBase + qGetRoutes + fullMPId + '&' + qRouteIds;
+  
+  
 
 
 ////////////////////////////////
@@ -47,7 +64,7 @@ Course: SEI-Flex (2019)
     }
     else {
       inputLocation = currLocation;
-      fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
+      fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullWeatherId;
       console.log(fullWeatherPath); // Testing Weather path
     }
     $.ajax({
@@ -94,7 +111,7 @@ Course: SEI-Flex (2019)
   // Forecast
   const getWeatherForecast = (currLocation) => {
       inputLocation = currLocation;
-      fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullId;
+      fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullWeatherId;
     $.ajax({
       url: fullWeatherPathForecast,
       type: "Get"
@@ -133,10 +150,69 @@ Course: SEI-Flex (2019)
     })
   }
 
-
   
   
-
+  // Mountain Project
+  const getRoutes = (options) => {
+    fullMPPathRoutesLatLong = mpBase + fullMPId + `&` + qGetRoutesLatLong;
+    fullMPPathRoutes = mpBase + qGetRoutes + fullMPId + '&' + qRouteIds;
+    
+    const $climbingContainer = $('<div>').addClass('route-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space between'});
+    if (options == 1) {
+      $.ajax({
+        url: fullMPPathRoutes
+      }).then((routeData) => {
+        console.log(fullMPPathRoutes);
+        for (let i = 0; i < routeData.routes.length; i++) {
+          let routeName = routeData.routes[i].name;
+          let routeType = routeData.routes[i].type;
+          let routeRating = routeData.routes[i].rating;
+          let routeStars = routeData.routes[i].stars;
+          let routePitches = routeData.routes[i].pitches;
+          let routeLocations = routeData.routes[i].location;
+          let routeImage = routeData.routes[i].imgSmallMed;
+          
+          const $routeName = $('<h2>').attr('id', routeName).text(routeName);
+          const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
+          const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
+          
+          const $routeContainer = $('<div>').attr('id', routeData.routes[i]).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center'});
+          $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
+          $($climbingContainer).append($routeContainer)
+        }
+        $('.content-container').append($climbingContainer);
+      },
+      (error) => {
+        console.error(error);
+      })
+    }
+    else if (options == 2) {
+      $.ajax({
+        url: fullMPPathRoutesLatLong
+      }).then((routeData) => {
+        for (let i = 0; i < routeData.routes.length; i++) {
+          let routeName = routeData.routes[i].name;
+          let routeType = routeData.routes[i].type;
+          let routeRating = routeData.routes[i].rating;
+          let routeStars = routeData.routes[i].stars;
+          let routePitches = routeData.routes[i].pitches;
+          let routeLocations = routeData.routes[i].locations;
+          let routeImage = routeData.routes[i].imgSmallMed;
+        }
+      },
+      (error) => {
+        console.error(error);
+      
+      })
+    }
+  }
+  
+  
+  
+  
+  
+  
+  
 ////////////////////////////////
 // Functions
 ////////////////////////////////
@@ -166,10 +242,6 @@ Course: SEI-Flex (2019)
  $(() => {
    
    navigator.geolocation.getCurrentPosition(positionSuccess);
-   // getWeather(currentPos,3)
-   
-   
-   // fullWeatherPathCurrCoord = weatherbase + latStarter + locationLat + `&` + longStarter + locationLong; 
 
    $('form').on('submit', (event) => {
      $('.weather-bar').empty();
@@ -178,6 +250,12 @@ Course: SEI-Flex (2019)
      $('input[type="text"]').val("")
      console.log($('.weather-bar').eq(0))
    })
+   
+   $('#nav-routes').on('click', (event) => {
+     $('.content-container').empty();
+     getRoutes(1);
+   })
+   
    
    $('#nav-weather').on('click', (event) => {
      $('.content-container').empty();
