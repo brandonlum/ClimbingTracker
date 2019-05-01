@@ -13,15 +13,23 @@ Course: SEI-Flex (2019)
 
   // Weather 
   const weatherBase = `http://api.openweathermap.org/data/2.5/weather?`;
+  const forecastBase = `http://api.openweathermap.org/data/2.5/forecast?`
   const id = `NWY1MjU4NmU2NWQyNjhiYzQwMjRhNzFkN2E4NjgzODc=`;
   const dcId = window.atob(id);
   const fullId = `APPID=${dcId}`;
   const queryStarter = `q=`;
+  const latStarter = `lat=`;
+  const longStarter = `long=`;
+  let locationLat = `40`;
+  let locationLong = `-74`
   let inputLocation = `new york`; // lowercase
+  let currentPos = 0;
 
   let fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
+  
+  let fullWeatherPathCurrCoord = weatherBase + latStarter + locationLat + `&` + longStarter + locationLong; 
 
-
+  let fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullId;
 
 
 
@@ -31,19 +39,20 @@ Course: SEI-Flex (2019)
 
   // Weather
   const getWeather = (currLocation, displayLocation) => {
-    inputLocation = currLocation;
-    fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
-    // if (displayLocation == 1 && currLocation == "") {
-    //   inputLocation = `new york`
-    //   fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
-    // }
-    console.log(fullWeatherPath); // Testing Weather path
+    if (displayLocation == 3) {
+      locationLat = currentPos.latitude;
+      locationLong = currentPos.longitude;
+      fullWeatherPathCurrCoord = weatherBase + latStarter + locationLat + `&` + longStarter + locationLong; 
+      console.log(fullWeatherPathCurrCoord);
+    }
+    else {
+      inputLocation = currLocation;
+      fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
+      console.log(fullWeatherPath); // Testing Weather path
+    }
     $.ajax({
       url: fullWeatherPath,
-      type: "Get"//,
-      // data: {
-      //   "$limit": 1;
-      // }
+      type: "Get"
     }).then((weatherData) => {
       let currentTempFah = convKeltoFah(weatherData.main.temp);
       let currentTempCel = convKeltoCel(weatherData.main.temp);
@@ -51,26 +60,27 @@ Course: SEI-Flex (2019)
       let tempMaxFah = convKeltoFah(weatherData.main.temp_max);
       let tempMinCel = convKeltoCel(weatherData.main.temp_min);
       let tempMaxCel = convKeltoCel(weatherData.main.temp_max);
+      let currentCond = weatherData.weather[0].main;
+      let currCityName = weatherData.name;
       if (displayLocation == 1) {
-        // if (currLocation == "") {
-        //   const $unknownLocation = $('<h2>').text(`Please indicate location in Weather Information Section (Top Right)`);
-        //   $('.content-container').append($unknownLocation)
-        // }
-        // else {
-          const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize'});
-          const $currentTempCont = $('<div>').text(`Current Temp = ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
-          const $tempMinMax = $('<div>').text(`Temp Range = ${tempMinFah + String.fromCharCode(176)}F/${tempMinCel + String.fromCharCode(176)}C - ${tempMaxFah + String.fromCharCode(176)}F/${tempMaxCel + String.fromCharCode(176)}C`);  
-          $('.content-container').append($city).append($currentTempCont).append($tempMinMax)
-        // }
+        const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize'});
+        const $currentTempCont = $('<div>').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
+        const $tempMinMax = $('<div>').text(`Low: ${tempMinFah + String.fromCharCode(176)}F/${tempMinCel + String.fromCharCode(176)}C - High: ${tempMaxFah + String.fromCharCode(176)}F/${tempMaxCel + String.fromCharCode(176)}C`);  
+        $('.content-container').append($city).append($currentTempCont).append($tempMinMax)
       }
       else if (displayLocation == 2) {
         const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
-        $('.weather-bar').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
+        $('.weather-bar').text(`${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C - ${currentCond}`);
+        $('.weather-bar').prepend($city)
+      }
+      else if (displayLocation == 3) {
+        const $city = $('<h2>').attr('id','cityName').text(currCityName).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
+        $('.weather-bar').text(`${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C - ${currentCond}`);
         $('.weather-bar').prepend($city)
       }
     },
     (error) => {
-      if (displayLocation == 2) {
+      if (displayLocation == 2 || displayLocation == 3) {
         console.error(error)
         $('.weather-bar').text(`Incorrect Value, try again!`)
       }
@@ -81,28 +91,48 @@ Course: SEI-Flex (2019)
     })
   }
   
-  
-  
-  // Weather Bar
-  // const getWeatherBar = (currLocation) => {
-  //   inputLocation = currLocation;
-  //   fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullId;
-  //   console.log(fullWeatherPath); // Testing Weather path
-  //   $.ajax({
-  //     url: fullWeatherPath,
-  //     type: "Get"
-  //   }).then((weatherData) => {
-  //     const $city = $('<h2>').text(inputLocation).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
-  //     let currentTempFah = convKeltoFah(weatherData.main.temp);
-  //     let currentTempCel = convKeltoCel(weatherData.main.temp);
-  //     $('.weather-bar').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
-  //     $('.weather-bar').prepend($city)
-  //   },
-  //   (error) => {
-  //     console.error(error)
-  //     $('.weather-bar').text(`Incorrect Value, try again!`)
-  //   })
-  // }
+  // Forecast
+  const getWeatherForecast = (currLocation) => {
+      inputLocation = currLocation;
+      fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullId;
+    $.ajax({
+      url: fullWeatherPathForecast,
+      type: "Get"
+    }).then((weatherData) => {
+      let currCityName = weatherData.city.name;
+      const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize'});
+      $('.content-container').append($city);
+      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space between'});
+      
+      for (let i = 0; i < weatherData.list.length; i++) {
+        let currentTempFah = convKeltoFah(weatherData.list[i].main.temp);
+        let currentTempCel = convKeltoCel(weatherData.list[i].main.temp);
+        let tempMinFah = convKeltoFah(weatherData.list[i].main.temp_min);
+        let tempMaxFah = convKeltoFah(weatherData.list[i].main.temp_max);
+        let tempMinCel = convKeltoCel(weatherData.list[i].main.temp_min);
+        let tempMaxCel = convKeltoCel(weatherData.list[i].main.temp_max);
+        let weatherDesc = weatherData.list[i].weather.description;
+        let weatherDT = weatherData.list[i].dt_txt;
+        let weatherDate = weatherData.list[i].dt_txt.split(' ')[0];
+        // if (weatherData.list[i].dt_txt.split(' ')[1])
+        let weatherTime = weatherData.list[i].dt_txt.split(' ')[1];
+        
+        const $dayContainer = $('<div>').addClass('day-container').attr('id',`forecastDay${weatherDate}`).css({'border': '1px solid black', margin: '5px'});
+        
+        const $currentTempCont = $('<div>').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
+        const $tempMinMax = $('<div>').text(`Low: ${tempMinFah + String.fromCharCode(176)}F/${tempMinCel + String.fromCharCode(176)}C - High: ${tempMaxFah + String.fromCharCode(176)}F/${tempMaxCel + String.fromCharCode(176)}C`);  
+        
+        $($dayContainer).append(weatherDT).append($currentTempCont).append($tempMinMax).append(weatherDesc);
+        $($forecastContainer).append($dayContainer);
+      }
+      $('.content-container').append($forecastContainer);
+    },
+    (error) => {
+      console.error(error)
+      $('.content-container').text(`Please input city value in top right corner`)
+    })
+  }
+
 
   
   
@@ -120,8 +150,26 @@ Course: SEI-Flex (2019)
     const convKeltoCel = (tempKel) => {
       return (tempKel-273.15).toFixed(0); // convert from Kelvin to Celcius
     };
+    
+    
+    
+  // getCurrentPosition
+    const positionSuccess = (position) => {
+      currentPos = position.coords;
+      console.log(currentPos.latitude, currentPos.longitude);
+      getWeather(currentPos,3)
+      return currentPos;
+    }
+    
+    
 
  $(() => {
+   
+   navigator.geolocation.getCurrentPosition(positionSuccess);
+   // getWeather(currentPos,3)
+   
+   
+   // fullWeatherPathCurrCoord = weatherbase + latStarter + locationLat + `&` + longStarter + locationLong; 
 
    $('form').on('submit', (event) => {
      $('.weather-bar').empty();
@@ -138,8 +186,7 @@ Course: SEI-Flex (2019)
        const $unknownLocation = $('<h2>').text(`Please indicate location in Weather Information Section (Top Right)`);
        $('.content-container').append($unknownLocation)
      }
-     else {getWeather($('#cityName').text(),1);}
-     
+     else {getWeatherForecast($('#cityName').text())};
    })
    
    
