@@ -44,7 +44,7 @@ Course: SEI-Flex (2019)
   const qRouteIds = `routeIds=${routeIds}`;
   const fullMPId = `key=${window.atob(idArr[1])}`;
   
-  let fullMPPathRoutesLatLong = mpBase + fullMPId + `&` + qGetRoutesLatLong;
+  let fullMPPathRoutesLatLong = mpBase + qGetRoutesLatLong + fullMPId + `&` + latStarter + locationLat + `&` + longStarter + locationLong;
   let fullMPPathRoutes = mpBase + qGetRoutes + fullMPId + '&' + qRouteIds;
   
   
@@ -154,10 +154,15 @@ Course: SEI-Flex (2019)
   
   // Mountain Project
   const getRoutes = (options) => {
-    fullMPPathRoutesLatLong = mpBase + fullMPId + `&` + qGetRoutesLatLong;
     fullMPPathRoutes = mpBase + qGetRoutes + fullMPId + '&' + qRouteIds;
+    if (options == 2) {
+      locationLat = currentPos.latitude;
+      locationLong = currentPos.longitude;
+      fullMPPathRoutesLatLong = mpBase + qGetRoutesLatLong + fullMPId + `&` + latStarter + locationLat + `&` + longStarter + locationLong;
+      console.log(fullMPPathRoutesLatLong);
+    }
     
-    const $climbingContainer = $('<div>').addClass('route-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space between'});
+    const $climbingContainer = $('<div>').addClass('route-container').css({display: 'flex', 'flex-flow': 'row wrap', 'justify-content': 'space between'});
     if (options == 1) {
       $.ajax({
         url: fullMPPathRoutes
@@ -165,6 +170,7 @@ Course: SEI-Flex (2019)
         console.log(fullMPPathRoutes);
         for (let i = 0; i < routeData.routes.length; i++) {
           let routeName = routeData.routes[i].name;
+          console.log(routeName)
           let routeType = routeData.routes[i].type;
           let routeRating = routeData.routes[i].rating;
           let routeStars = routeData.routes[i].stars;
@@ -172,11 +178,11 @@ Course: SEI-Flex (2019)
           let routeLocations = routeData.routes[i].location;
           let routeImage = routeData.routes[i].imgSmallMed;
           
-          const $routeName = $('<h2>').attr('id', routeName).text(routeName);
+          const $routeName = $('<h2>').text(routeName);
           const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
           const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
           
-          const $routeContainer = $('<div>').attr('id', routeData.routes[i]).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center'});
+          const $routeContainer = $('<div>').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center'});
           $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
           $($climbingContainer).append($routeContainer)
         }
@@ -190,15 +196,26 @@ Course: SEI-Flex (2019)
       $.ajax({
         url: fullMPPathRoutesLatLong
       }).then((routeData) => {
+        console.log(fullMPPathRoutes);
         for (let i = 0; i < routeData.routes.length; i++) {
           let routeName = routeData.routes[i].name;
+          console.log(routeName)
           let routeType = routeData.routes[i].type;
           let routeRating = routeData.routes[i].rating;
           let routeStars = routeData.routes[i].stars;
           let routePitches = routeData.routes[i].pitches;
-          let routeLocations = routeData.routes[i].locations;
+          let routeLocations = routeData.routes[i].location;
           let routeImage = routeData.routes[i].imgSmallMed;
+          
+          const $routeName = $('<h2>').text(routeName);
+          const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
+          const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
+          
+          const $routeContainer = $('<div>').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center'});
+          $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
+          $($climbingContainer).append($routeContainer)
         }
+        $('.content-container').append($climbingContainer);
       },
       (error) => {
         console.error(error);
@@ -234,8 +251,30 @@ Course: SEI-Flex (2019)
       currentPos = position.coords;
       console.log(currentPos.latitude, currentPos.longitude);
       getWeather(currentPos,3)
+      getRoutes(2)
       return currentPos;
     }
+    
+    
+  // Filter bar
+    const filter = (type) => {
+      if (type == 'news') {
+        
+      }
+      else if (type == 'routes') {
+        const routeTypes = ['boulder','trad','sport']
+        const $filterType = $('<select>').attr('name','Tyes').attr('id', 'routeFilterType')
+        // const $option
+        
+        
+        const $div = $('<div>')
+        
+        const $filterBar = $('<nav>').addClass('routefilterbar-container')
+        $('.navbar-container').after($filterBar)
+      }
+      
+    }
+    
     
     
 
@@ -251,9 +290,10 @@ Course: SEI-Flex (2019)
      console.log($('.weather-bar').eq(0))
    })
    
+   
    $('#nav-routes').on('click', (event) => {
      $('.content-container').empty();
-     getRoutes(1);
+     getRoutes(2);
    })
    
    

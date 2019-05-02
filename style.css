@@ -51,7 +51,6 @@ a {
 
 nav div {
   display: flex;
-  justify-content: space-between;
   width: 70%;
 }
 
@@ -66,3 +65,11 @@ div a {
 #title {
   font-size: 1.5em;
 }
+
+
+/* @media {
+  .navbar-container {
+    position: sticky;
+    top: 0;
+  }
+} */
