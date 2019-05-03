@@ -14,8 +14,8 @@ Course: SEI-Flex (2019)
   const idArr = [`NWY1MjU4NmU2NWQyNjhiYzQwMjRhNzFkN2E4NjgzODc=`, 'MjAwNDU1NDUxLWQ3ZWJjNzk3MmVjODEyODhlZTgxYjFkN2U4MWE3NDI1']; // openWeather, Mountain Project
   
   // Weather 
-  const weatherBase = `http://api.openweathermap.org/data/2.5/weather?`;
-  const forecastBase = `http://api.openweathermap.org/data/2.5/forecast?`
+  const weatherBase = `https://api.openweathermap.org/data/2.5/weather?`;
+  const forecastBase = `https://api.openweathermap.org/data/2.5/forecast?`
   const fullWeatherId = `APPID=${window.atob(idArr[0])}`;
   const queryStarter = `q=`;
   const latStarter = `lat=`;
@@ -112,6 +112,11 @@ Course: SEI-Flex (2019)
   const getWeatherForecast = (currLocation) => {
       inputLocation = currLocation;
       fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullWeatherId;
+      
+      const $pageTitle = $('<h1>').text('Weather Forecast').css({display: 'flex', 'justify-content': 'center', width: '100%'});
+      $('.content-container').append($pageTitle).css({display:'flex', 'flex-flow': 'row wrap'});
+      
+      
     $.ajax({
       url: fullWeatherPathForecast,
       type: "Get"
@@ -119,7 +124,7 @@ Course: SEI-Flex (2019)
       let currCityName = weatherData.city.name;
       const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize'});
       $('.content-container').append($city);
-      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space between'});
+      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space between', width: '80%'});
       
       for (let i = 0; i < weatherData.list.length; i++) {
         let currentTempFah = convKeltoFah(weatherData.list[i].main.temp);
@@ -162,37 +167,47 @@ Course: SEI-Flex (2019)
       console.log(fullMPPathRoutesLatLong);
     }
     
-    const $climbingContainer = $('<div>').addClass('route-container').css({display: 'flex', 'flex-flow': 'row wrap', 'justify-content': 'space between'});
-    if (options == 1) {
-      $.ajax({
-        url: fullMPPathRoutes
-      }).then((routeData) => {
-        console.log(fullMPPathRoutes);
-        for (let i = 0; i < routeData.routes.length; i++) {
-          let routeName = routeData.routes[i].name;
-          console.log(routeName)
-          let routeType = routeData.routes[i].type;
-          let routeRating = routeData.routes[i].rating;
-          let routeStars = routeData.routes[i].stars;
-          let routePitches = routeData.routes[i].pitches;
-          let routeLocations = routeData.routes[i].location;
-          let routeImage = routeData.routes[i].imgSmallMed;
-          
-          const $routeName = $('<h2>').text(routeName);
-          const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
-          const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
-          
-          const $routeContainer = $('<div>').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center'});
-          $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
-          $($climbingContainer).append($routeContainer)
-        }
-        $('.content-container').append($climbingContainer);
-      },
-      (error) => {
-        console.error(error);
-      })
-    }
-    else if (options == 2) {
+    const $pageTitle = $('<h1>').text('Routes').css({display: 'flex', 'justify-content': 'center', width: '100%'});
+    $('.content-container').append($pageTitle).css({display:'flex', 'flex-flow': 'row wrap'})
+    
+    const $climbingContainer = $('<div>').addClass('climbing-container').css({display: 'block', width: '80%', height: '80%', margin: '0 auto'});
+    
+      
+    
+    const $carouselContainer = $('<div>').addClass('carousel-container').css({display: 'flex', width: '80%', height: '80%', 'justify-content': 'space around', margin: '0 auto'});
+  
+    
+    // if (options == 1) {
+    //   $.ajax({
+    //     url: fullMPPathRoutes
+    //   }).then((routeData) => {
+    //     console.log(fullMPPathRoutes);
+    //     for (let i = 0; i < routeData.routes.length; i++) {
+    //       let routeName = routeData.routes[i].name;
+    //       console.log(routeName)
+    //       let routeType = routeData.routes[i].type;
+    //       let routeRating = routeData.routes[i].rating;
+    //       let routeStars = routeData.routes[i].stars;
+    //       let routePitches = routeData.routes[i].pitches;
+    //       let routeLocations = routeData.routes[i].location;
+    //       let routeImage = routeData.routes[i].imgSmallMed;
+    // 
+    //       const $routeName = $('<h2>').text(routeName);
+    //       const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
+    //       const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
+    // 
+    //       const $routeContainer = $('<div>').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center', width: '80%'});
+    //       $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
+    //       $($climbingContainer).append($routeContainer)
+    //     }
+    //     $('.content-container').append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
+    //   },
+    //   (error) => {
+    //     console.error(error);
+    //   })
+    // }
+    // else 
+    if (options == 2) {
       $.ajax({
         url: fullMPPathRoutesLatLong
       }).then((routeData) => {
@@ -208,14 +223,16 @@ Course: SEI-Flex (2019)
           let routeImage = routeData.routes[i].imgSmallMed;
           
           const $routeName = $('<h2>').text(routeName);
-          const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
+          const $routeInformation = $('<p>').html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`).css({'white-space': 'pre-wrap'});
           const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
           
-          const $routeContainer = $('<div>').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center'});
+          const $routeContainer = $('<div>').addClass('route-card').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `0 auto`, 'text-align': 'center', 'min-height': '500px'});
           $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
           $($climbingContainer).append($routeContainer)
         }
-        $('.content-container').append($climbingContainer);
+        $($carouselContainer).append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
+        $('.content-container').append($carouselContainer)
+
       },
       (error) => {
         console.error(error);
@@ -227,6 +244,16 @@ Course: SEI-Flex (2019)
   
   
   
+  
+////////////////////////////////
+// Dom Elements
+////////////////////////////////
+  const $divNextBtn = $('<div>').addClass('carousel-button next').append($('<span>').addClass('lnr lnr-chevron-right')).css({display: 'block', 'max-width': '10%', margin: '0 auto'});
+
+  const $divPreviousBtn = $('<div>').addClass('carousel-button previous').append($('<span>').addClass('lnr lnr-chevron-left')).css({display: 'block', 'max-width': '10%', margin: '0 auto'});
+
+
+
   
   
   
@@ -250,30 +277,30 @@ Course: SEI-Flex (2019)
     const positionSuccess = (position) => {
       currentPos = position.coords;
       console.log(currentPos.latitude, currentPos.longitude);
-      getWeather(currentPos,3)
-      getRoutes(2)
+      getWeather(currentPos,3);
+      getRoutes(2);
       return currentPos;
     }
     
     
   // Filter bar
-    const filter = (type) => {
-      if (type == 'news') {
-        
-      }
-      else if (type == 'routes') {
-        const routeTypes = ['boulder','trad','sport']
-        const $filterType = $('<select>').attr('name','Tyes').attr('id', 'routeFilterType')
-        // const $option
-        
-        
-        const $div = $('<div>')
-        
-        const $filterBar = $('<nav>').addClass('routefilterbar-container')
-        $('.navbar-container').after($filterBar)
-      }
-      
-    }
+    // const filter = (type) => {
+    //   if (type == 'news') {
+    // 
+    //   }
+    //   else if (type == 'routes') {
+    //     const routeTypes = ['boulder','trad','sport']
+    //     const $filterType = $('<select>').attr('name','Tyes').attr('id', 'routeFilterType')
+    //     // const $option
+    // 
+    // 
+    //     const $div = $('<div>')
+    // 
+    //     const $filterBar = $('<nav>').addClass('routefilterbar-container')
+    //     $('.navbar-container').after($filterBar)
+    //   }
+    // 
+    // }
     
     
     
@@ -281,6 +308,12 @@ Course: SEI-Flex (2019)
  $(() => {
    
    navigator.geolocation.getCurrentPosition(positionSuccess);
+   
+   let currentIndex = 0;
+   let climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+   console.log(currentIndex);
+   console.log(climbingRoutesMaxIndex);
+
 
    $('form').on('submit', (event) => {
      $('.weather-bar').empty();
@@ -296,6 +329,34 @@ Course: SEI-Flex (2019)
      getRoutes(2);
    })
    
+   $($divNextBtn).on('click', (event) => {
+     climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+     console.log(currentIndex);
+     console.log(climbingRoutesMaxIndex);
+     $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
+     if (currentIndex < climbingRoutesMaxIndex) {
+       currentIndex++;
+     }
+     else {
+       currentIndex = 0;
+     }
+     $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
+   })
+   
+   $($divPreviousBtn).on('click', (event) => {
+     climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+     console.log(currentIndex);
+     console.log(climbingRoutesMaxIndex);
+     $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
+     if (currentIndex <= 0) {
+       currentIndex = climbingRoutesMaxIndex;
+     }
+     else {
+       currentIndex--;
+     }
+     $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
+   })
+
    
    $('#nav-weather').on('click', (event) => {
      $('.content-container').empty();

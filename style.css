@@ -5,9 +5,14 @@ Course: SEI-Flex (2019)
 */
 
 
-.banner-location-container, .navbar-container, .location-container {
+.banner-location-container, .navbar-container, .location-container, .content-container {
   display: flex;
 }
+
+.content-container {
+  margin: 20px;
+}
+
 
 .banner-location-container {
   justify-content: space-between;
@@ -64,6 +69,22 @@ div a {
 
 #title {
   font-size: 1.5em;
+}
+
+.carousel-button {
+  align-self: center;
+  padding: 10px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 5em;
+}
+
+.route-card {
+  display: none;
+}
+
+.climbing-container div:first-of-type {
+  display: block;
 }
 
 
