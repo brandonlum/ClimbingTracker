@@ -172,49 +172,45 @@ Course: SEI-Flex (2019)
     
     const $climbingContainer = $('<div>').addClass('climbing-container').css({display: 'block', width: '80%', height: '80%', margin: '0 auto'});
     
-      
-    
     const $carouselContainer = $('<div>').addClass('carousel-container').css({display: 'flex', width: '80%', height: '80%', 'justify-content': 'space around', margin: '0 auto'});
   
     
-    // if (options == 1) {
-    //   $.ajax({
-    //     url: fullMPPathRoutes
-    //   }).then((routeData) => {
-    //     console.log(fullMPPathRoutes);
-    //     for (let i = 0; i < routeData.routes.length; i++) {
-    //       let routeName = routeData.routes[i].name;
-    //       console.log(routeName)
-    //       let routeType = routeData.routes[i].type;
-    //       let routeRating = routeData.routes[i].rating;
-    //       let routeStars = routeData.routes[i].stars;
-    //       let routePitches = routeData.routes[i].pitches;
-    //       let routeLocations = routeData.routes[i].location;
-    //       let routeImage = routeData.routes[i].imgSmallMed;
-    // 
-    //       const $routeName = $('<h2>').text(routeName);
-    //       const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
-    //       const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
-    // 
-    //       const $routeContainer = $('<div>').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `5px auto`, 'text-align': 'center', width: '80%'});
-    //       $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
-    //       $($climbingContainer).append($routeContainer)
-    //     }
-    //     $('.content-container').append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
-    //   },
-    //   (error) => {
-    //     console.error(error);
-    //   })
-    // }
-    // else 
-    if (options == 2) {
+    if (options == 1) {
       $.ajax({
-        url: fullMPPathRoutesLatLong
+        url: fullMPPathRoutes
       }).then((routeData) => {
         console.log(fullMPPathRoutes);
         for (let i = 0; i < routeData.routes.length; i++) {
           let routeName = routeData.routes[i].name;
-          console.log(routeName)
+          let routeType = routeData.routes[i].type;
+          let routeRating = routeData.routes[i].rating;
+          let routeStars = routeData.routes[i].stars;
+          let routePitches = routeData.routes[i].pitches;
+          let routeLocations = routeData.routes[i].location;
+          let routeImage = routeData.routes[i].imgSmallMed;
+    
+          const $routeName = $('<h2>').text(routeName);
+          const $routeInformation = $('<p>').css({'white-space': 'pre-wrap'}).html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`);
+          const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
+          
+          const $routeContainer = $('<div>').addClass('route-card').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `0 auto`, 'text-align': 'center', 'min-height': '500px'});
+          $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
+          $($climbingContainer).append($routeContainer)
+        }
+        $($carouselContainer).append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
+        $('.content-container').append($carouselContainer)
+      },
+      (error) => {
+        console.error(error);
+      })
+    }
+    else 
+    if (options == 2) {
+      $.ajax({
+        url: fullMPPathRoutesLatLong
+      }).then((routeData) => {
+        for (let i = 0; i < routeData.routes.length; i++) {
+          let routeName = routeData.routes[i].name;
           let routeType = routeData.routes[i].type;
           let routeRating = routeData.routes[i].rating;
           let routeStars = routeData.routes[i].stars;

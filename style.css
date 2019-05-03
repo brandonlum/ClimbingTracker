@@ -26,7 +26,6 @@ Course: SEI-Flex (2019)
 
 .location-container {
   width: 40%;
-  height: 1.5em;
   border: 1px solid black;
   justify-content: space-between;
 }
@@ -68,7 +67,14 @@ div a {
 }
 
 #title {
+  text-align: left;
+  border: 0;
+  width: auto;
+}
+
+.banner-location-container {
   font-size: 1.5em;
+  height: 2em;
 }
 
 .carousel-button {
