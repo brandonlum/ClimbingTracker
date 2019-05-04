@@ -11,7 +11,7 @@ Course: SEI-Flex (2019)
 // API Setup
 ////////////////////////////////
   
-  const idArr = [`NWY1MjU4NmU2NWQyNjhiYzQwMjRhNzFkN2E4NjgzODc=`, 'MjAwNDU1NDUxLWQ3ZWJjNzk3MmVjODEyODhlZTgxYjFkN2U4MWE3NDI1']; // openWeather, Mountain Project
+  const idArr = [`NWY1MjU4NmU2NWQyNjhiYzQwMjRhNzFkN2E4NjgzODc=`, 'MjAwNDU1NDUxLWQ3ZWJjNzk3MmVjODEyODhlZTgxYjFkN2U4MWE3NDI1','MDgxNGM4N2I1ZjRjNGYyYTlkMGFkNDAyMTE2M2Y3YWU=']; // openWeather, Mountain Project, News
   
   // Weather 
   const weatherBase = `https://api.openweathermap.org/data/2.5/weather?`;
@@ -48,6 +48,15 @@ Course: SEI-Flex (2019)
   let fullMPPathRoutes = mpBase + qGetRoutes + fullMPId + '&' + qRouteIds;
   
   
+  
+  // NewsAPI
+  const newsBase = `https://newsapi.org/v2/`
+  const newsQType = ['everything?','top-headlines?','sources?'];
+  const fullNewsID = `apiKey=${window.atob(idArr[2])}`;
+  let newsQuery = 'rock climbing';
+  let fullNewsPath = newsBase + newsQType[0] + fullNewsID + '&' + queryStarter + newsQuery
+  'https://newsapi.org/v2/everything?q=rock climbing&apiKey=0814c87b5f4c4f2a9d0ad4021163f7ae'
+
 
 
 ////////////////////////////////
@@ -61,12 +70,12 @@ Course: SEI-Flex (2019)
       locationLat = currentPos.latitude;
       locationLong = currentPos.longitude;
       fullWeatherPathCurrCoord = weatherBase + latStarter + locationLat + `&` + longStarter + locationLong; 
-      console.log(fullWeatherPathCurrCoord);
+      // console.log(fullWeatherPathCurrCoord);
     }
     else {
       inputLocation = currLocation;
       fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullWeatherId;
-      console.log(fullWeatherPath); // Testing Weather path
+      // console.log(fullWeatherPath); // Testing Weather path
     }
     $.ajax({
       url: fullWeatherPath,
@@ -139,9 +148,9 @@ Course: SEI-Flex (2019)
       type: "Get"
     }).then((weatherData) => {
       let currCityName = weatherData.city.name;
-      const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize'});
+      const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize', width: '80%', 'text-align': 'center', margin: '0 auto' });
       $('.content-container').append($city);
-      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space between', width: '80%'});
+      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space-around', width: '80%', margin: '0 auto', 'text-align': 'center'});
       
       for (let i = 0; i < weatherData.list.length; i++) {
         let currentTempFah = convKeltoFah(weatherData.list[i].main.temp);
@@ -165,6 +174,7 @@ Course: SEI-Flex (2019)
         $($forecastContainer).append($dayContainer);
       }
       $('.content-container').append($forecastContainer);
+      $('.poweredby').append(`Powered by: OpenWeatherMap`)
     },
     (error) => {
       console.error(error)
@@ -182,7 +192,7 @@ Course: SEI-Flex (2019)
       locationLat = lat;
       locationLong = lon;
       fullMPPathRoutesLatLong = mpBase + qGetRoutesLatLong + fullMPId + `&` + latStarter + locationLat + `&` + longStarter + locationLong;
-      console.log(fullMPPathRoutesLatLong);
+      // console.log(fullMPPathRoutesLatLong);
     }
     
     const $pageTitle = $('<h1>').text('Routes').css({display: 'flex', 'justify-content': 'center', width: '100%'});
@@ -194,7 +204,7 @@ Course: SEI-Flex (2019)
       $.ajax({
         url: fullMPPathRoutes
       }).then((routeData) => {
-        console.log(fullMPPathRoutes);
+        // console.log(fullMPPathRoutes);
         for (let i = 0; i < routeData.routes.length; i++) {
           let routeName = routeData.routes[i].name;
           let routeType = routeData.routes[i].type;
@@ -214,6 +224,7 @@ Course: SEI-Flex (2019)
         }
         $($carouselContainer).append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
         $('.content-container').append($carouselContainer)
+        $('.poweredby').append(`Powered by: Mountain Project`)
       },
       (error) => {
         console.error(error);
@@ -241,11 +252,12 @@ Course: SEI-Flex (2019)
           $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
           $($climbingContainer).append($routeContainer)
         }
-        $($divNextBtn).on('click', nextRoute)
-        $($divPreviousBtn).on('click', previousRoute)
+        $($divNextBtn).on('click', nextItem)
+        $($divPreviousBtn).on('click', previousItem)
         
         $($carouselContainer).append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
         $('.content-container').append($carouselContainer)
+        $('.poweredby').append(`Powered by: Mountain Project`)
       },
       (error) => {
         console.error(error);
@@ -255,6 +267,49 @@ Course: SEI-Flex (2019)
   }
   
   
+  // NewsAPI
+  const getNews = (option) => {
+    currentIndex = 0;
+    const $pageTitle = $('<h1>').text('News').css({display: 'flex', 'justify-content': 'center', width: '100%'});
+    $('.content-container').append($pageTitle).css({display:'flex', 'flex-flow': 'row wrap'})
+    const $newsContainer = $('<div>').addClass('news-container').css({display: 'block', width: '80%', height: '80%', margin: '0 auto'});
+    const $carouselContainer = $('<div>').addClass('carousel-container').css({display: 'flex', width: '80%', height: '80%', 'justify-content': 'space around', margin: '0 auto'});
+    $.ajax({
+      url: fullNewsPath
+    }).then((newsData) => {
+      for (let i = 0; i < newsData.articles.length; i++) {
+        let newsSource = newsData.articles[i].source.name;
+        let newsAuthor = newsData.articles[i].author;
+        let newsTitle = newsData.articles[i].title;
+        let newsDescription = newsData.articles[i].description;
+        let newsImg = newsData.articles[i].urlToImage;
+        let newsContent = newsData.articles[i].content;
+        let $newsLink = $('<a>').text(newsSource).attr('href', newsData.articles[i].url).css({border: '0', 'font-size': '0.9em', 'color': 'blue' })
+        
+        
+        const $newsTitle = $('<h2>').text(newsTitle);
+        const $newsInformation = $('<p>').html(`Author: ${newsAuthor} \n\n ${newsDescription}`).css({'white-space': 'pre-wrap'});
+        const $newsContent = $('<p>').html(`${$newsTitle} \n ${newsContent}`).css({'white-space': 'pre-wrap'});
+        
+        const $articleContainer = $('<div>').addClass('article-container').attr('id', newsTitle).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em', 'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'});
+        
+        // const $articleContainerBack = $('<div>').addClass('article-container-back').attr('id', newsTitle).text(newsContent).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em', 'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'});
+        
+        $($articleContainer).append($newsTitle).append($newsInformation).append($newsLink)
+        $($newsContainer).append($articleContainer)//.append($articleContainerBack)
+        // $($newsContainer).on('click', flipCard)
+      }
+      $($divNextBtn).on('click', nextItem)
+      $($divPreviousBtn).on('click', previousItem)
+      
+      $($carouselContainer).append($divPreviousBtn).append($newsContainer).append($divNextBtn);
+      $('.content-container').append($carouselContainer)
+      $('.poweredby').append(`Powered by: NewsAPI`)
+    },
+    (error) => {
+      console.error(error);
+    })
+  }
   
   
   
@@ -297,38 +352,45 @@ Course: SEI-Flex (2019)
     
     
     let currentIndex = 0;
-    let climbingRoutesMaxIndex = 0;
+    let maxIndex = 0;
     
   // Next 
-    const nextRoute = (event) => {
-      climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+    const nextItem = (event) => {
+      maxIndex = $('.carousel-container').children().eq(1).children().length-1;
       console.log(currentIndex);
-      console.log(climbingRoutesMaxIndex);
-      $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
-      if (currentIndex < climbingRoutesMaxIndex) {
+      console.log(maxIndex);
+      $('.carousel-container').children().eq(1).children().eq(currentIndex).css({display: 'none'})
+      if (currentIndex < maxIndex) {
         currentIndex++;
       }
       else {
         currentIndex = 0;
       }
-      $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
+      $('.carousel-container').children().eq(1).children().eq(currentIndex).css({display: 'block'})
     }
   
   
   // Previous
-    const previousRoute = (event) => {
-      climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+    const previousItem = (event) => {
+      maxIndex = $('.carousel-container').children().eq(1).children().length-1;
       console.log(currentIndex);
-      console.log(climbingRoutesMaxIndex);
-      $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
+      console.log(maxIndex);
+      $('.carousel-container').children().eq(1).children().eq(currentIndex).css({display: 'none'})
       if (currentIndex <= 0) {
-        currentIndex = climbingRoutesMaxIndex;
+        currentIndex = maxIndex;
       }
       else {
         currentIndex--;
       }
-      $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
+      $('.carousel-container').children().eq(1).children().eq(currentIndex).css({display: 'block'})
     }
+    
+    
+  // flipCard
+    // const flipCard = () => {
+    //   console.log($(event.target))
+    //   // $(event.target).
+    // }
     
     
   // Filter bar
@@ -364,18 +426,26 @@ Course: SEI-Flex (2019)
      event.preventDefault();
      getWeather($('input[type="text"]').val().toLowerCase(),2)
      $('input[type="text"]').val("")
-     console.log($('.weather-bar').eq(0))
+     // console.log($('.weather-bar').eq(0))
+   })
+   
+   $('#nav-news').on('click', (event) => {
+     $('.content-container').empty();
+     $('.poweredby').empty();
+     getNews();
    })
    
    
    $('#nav-routes').on('click', (event) => {
      $('.content-container').empty();
+     $('.poweredby').empty();
      getRoutes(2, locationLat, locationLong);
    })
    
    
    $('#nav-weather').on('click', (event) => {
      $('.content-container').empty();
+     $('.poweredby').empty();
      console.log($('#cityName').text())
      if ($('#cityName').text() == "") {
        const $unknownLocation = $('<h2>').text(`Please indicate location in Weather Information Section (Top Right)`);

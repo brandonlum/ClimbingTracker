@@ -11,12 +11,17 @@ html {
 }
 
 
-.banner-location-container, .navbar-container, .location-container, .content-container {
+.banner-location-container, .navbar-container, .location-container, .content-container, .poweredby {
   display: flex;
 }
 
-.content-container {
+.content-container, .poweredby {
   margin: 20px;
+}
+
+.poweredby {
+  text-align: center;
+  justify-content: center;
 }
 
 
@@ -42,15 +47,10 @@ html {
   margin: auto;
 }
 
-/* .content-container {
-  justify-content: space-between;
-} */
-
 
 form input {
   width: 40%;
   text-transform: capitalize;
-  /* margin-left: auto; */
 }
 
 
@@ -91,13 +91,35 @@ div a {
   font-size: 5em;
 }
 
-.route-card {
+.route-card, .article-container, .article-container-back {
   display: none;
 }
 
-.climbing-container div:first-of-type {
+.climbing-container div:first-of-type, .news-container div:first-of-type {
   display: block;
 }
+
+.article-container, .article-container-back {
+  background-color: rgba(238, 238, 238, 0.7) !important;
+  /* backface-visibility: hidden; */
+}
+
+/* .article-container:hover {
+  transform: rotateY(180deg);
+} */
+
+/* .article-container {
+  z-index: 2;
+} */
+
+/* .article-container-back {
+  z-index: 1;
+} */
+
+/* .news-container {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+} */
 
 .weather-icon {
   font-size: 1.3em;
@@ -117,10 +139,3 @@ div a {
   65% {transform: rotate(-30deg);}
   80% {transform: rotate(30deg);}
 }
-
-/* @media {
-  .navbar-container {
-    position: sticky;
-    top: 0;
-  }
-} */
