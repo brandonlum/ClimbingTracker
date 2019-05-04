@@ -100,18 +100,22 @@ div a {
 }
 
 .weather-icon {
-  font-size: 1.5em;
-  padding: 0 10px;
+  font-size: 1.3em;
   position: relative;
   animation-name: weather-move;
-  animation-duration: 10s;
-  animation-iteration-count: 2;
+  animation-duration: 5s;
+  animation-iteration-count: 1;
+  margin: auto;
+  margin-right: -20px;
+  align-self: center;
 }
 
 @keyframes weather-move {
-  0% {transform: rotate(45deg);}
-  50% {transform: rotate(315deg);}
-  100% {transform: rotate(180deg);}
+  0% {transform: rotate(30deg);}
+  20% {transform: rotate(-30deg);}
+  40% {transform: rotate(30deg);}
+  65% {transform: rotate(-30deg);}
+  80% {transform: rotate(30deg);}
 }
 
 /* @media {

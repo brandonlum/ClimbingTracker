@@ -89,8 +89,8 @@ Course: SEI-Flex (2019)
       else if (currentCond.toLowerCase() == "clouds" ) {
         $weatherIcon = $('<span>').addClass("lnr lnr-cloud weather-icon");
       }
-      else if (currentCond.toLowerCase() == "rain") {
-        $weatherIcon = $('<span>').addClass("lnr lnr-drop weather-icon");
+      else if (currentCond.toLowerCase() == "rain" || currentCond.toLowerCase() == "mist" || currentCond.toLowerCase() == "drizzle") {
+        $weatherIcon = $('<div>').addClass("lnr lnr-drop weather-icon");
       }
       
       if (displayLocation == 1) {
@@ -102,14 +102,13 @@ Course: SEI-Flex (2019)
       else if (displayLocation == 2) {
         const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
         $('.weather-bar').text(`${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C - ${currentCond}`);
-        $('.weather-bar').prepend($weatherIcon).prepend($city)
+        $('.weather-bar').before($weatherIcon).prepend($city)
       }
       else if (displayLocation == 3) { // Display in Weather bar
-        
-        
+
         const $city = $('<h2>').attr('id','cityName').text(currCityName).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
         $('.weather-bar').text(`${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C - ${currentCond}`);
-        $('.weather-bar').prepend($weatherIcon).prepend($city)
+        $('.weather-bar').before($weatherIcon).prepend($city)
       }
     },
     (error) => {
@@ -123,6 +122,8 @@ Course: SEI-Flex (2019)
       }
     })
   }
+  
+  
   
   // Forecast
   const getWeatherForecast = (currLocation) => {
@@ -186,12 +187,9 @@ Course: SEI-Flex (2019)
     
     const $pageTitle = $('<h1>').text('Routes').css({display: 'flex', 'justify-content': 'center', width: '100%'});
     $('.content-container').append($pageTitle).css({display:'flex', 'flex-flow': 'row wrap'})
-    
     const $climbingContainer = $('<div>').addClass('climbing-container').css({display: 'block', width: '80%', height: '80%', margin: '0 auto'});
-    
     const $carouselContainer = $('<div>').addClass('carousel-container').css({display: 'flex', width: '80%', height: '80%', 'justify-content': 'space around', margin: '0 auto'});
-  
-    
+      
     if (options == 1) {
       $.ajax({
         url: fullMPPathRoutes
@@ -248,9 +246,6 @@ Course: SEI-Flex (2019)
         
         $($carouselContainer).append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
         $('.content-container').append($carouselContainer)
-        
-        
-
       },
       (error) => {
         console.error(error);
@@ -365,6 +360,7 @@ Course: SEI-Flex (2019)
 
    $('form').on('submit', (event) => {
      $('.weather-bar').empty();
+     $('.weather-icon').remove();
      event.preventDefault();
      getWeather($('input[type="text"]').val().toLowerCase(),2)
      $('input[type="text"]').val("")
