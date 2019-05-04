@@ -75,6 +75,7 @@ nav form {
   border-radius: 10px;
   margin: auto;
   font-size: 1em;
+  text-transform: capitalize;
 }
 
 

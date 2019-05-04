@@ -54,7 +54,7 @@ Course: SEI-Flex (2019)
   const newsQType = ['everything?','top-headlines?','sources?'];
   const fullNewsID = `apiKey=${window.atob(idArr[2])}`;
   let newsQuery = 'alpine climbing';
-  let fullNewsPath = newsBase + newsQType[0] + fullNewsID + '&' + queryStarter + newsQuery;
+  let fullNewsPath = newsBase + newsQType[0] + queryStarter + newsQuery + '&' + fullNewsID;
 
 
 
@@ -272,7 +272,10 @@ Course: SEI-Flex (2019)
           const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
           
           const $routeContainer = $('<div>').addClass('route-card').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center'});
-          $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
+          $($routeContainer).append($routeName).append($routeInformation)
+          if (routeImage != null) {
+            $($routeContainer).append($routeImage);
+          }
           $($climbingContainer).append($routeContainer)
         }
         $($divNextBtn).on('click', nextItem)
@@ -291,12 +294,22 @@ Course: SEI-Flex (2019)
   
   
   // NewsAPI
-  const getNews = (option) => {
+  const getNews = (searchQuery) => {
     currentIndex = 0;
+    if (searchQuery == "" || searchQuery == " " || searchQuery == null) {
+      newsQuery = 'alpine climbing';
+    }
+    else {
+      newsQuery = searchQuery;
+    }
+    
+    fullNewsPath = newsBase + newsQType[0] + fullNewsID + '&' + queryStarter + newsQuery;
+    console.log(fullNewsPath);
+    
     const $pageTitle = $('<h1>').text('News').css({display: 'flex', 'justify-content': 'center', width: '100%'});
     $('.content-container').append($pageTitle).css({display:'flex', 'flex-flow': 'row wrap'})
     const $newsContainer = $('<div>').addClass('news-container').css({display: 'block', width: '80%', height: '80%', margin: '0 auto'});
-    const $carouselContainer = $('<div>').addClass('carousel-container').css({display: 'flex', width: '80%', height: '80%', 'justify-content': 'space around', margin: '0 auto'});
+    const $carouselContainer = $('<div>').addClass('carousel-container').css({display: 'flex', width: '80%', height: '80%', 'justify-content': 'space-around', margin: '0 auto'});
     $.ajax({
       url: fullNewsPath
     }).then((newsData) => {
@@ -313,8 +326,11 @@ Course: SEI-Flex (2019)
         const $newsTitle = $('<h2>').text(newsTitle);
         const $newsInformation = $('<p>').html(`Author: ${newsAuthor} \n\n ${newsDescription}`).css({'white-space': 'pre-wrap'});
         const $newsContent = $('<p>').html(`${$newsTitle} \n ${newsContent}`).css({'white-space': 'pre-wrap'});
-      
-        const $articleContainer = $('<div>').addClass('article-container').attr('id', newsTitle).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em', 'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'});
+        
+        const $articleContainer = $('<div>').addClass('article-container').attr('id', newsTitle).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em'});
+        if (newsImg != null) {
+          $articleContainer.css({'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'})
+        }
       
         // const $articleContainerBack = $('<div>').addClass('article-container-back').attr('id', newsTitle).text(newsContent).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em', 'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'});
       
@@ -447,16 +463,18 @@ Course: SEI-Flex (2019)
      $('.weather-bar').empty();
      $('.weather-icon').remove();
      event.preventDefault();
-     getWeather($('input[type="text"]').val().toLowerCase(),2)
-     $('input[type="text"]').val("")
+     getWeather($('#weatherLocation').val().toLowerCase(),2)
+     $('#weatherLocation').val("")
      // console.log($('.weather-bar').eq(0))
    })
    
-    // $('#searchBar').on('submit', (event) => {
-    //   $('.content-container').empty();
-    //   $('.poweredby').empty();
-    //   event.preventDefault();
-    // })
+    $('.search-container').on('submit', (event) => {
+      $('.content-container').empty();
+      $('.poweredby').empty();
+      event.preventDefault();
+      getNews($('#searchBar').val());
+      $('#searchBar').val("");
+    })
    
    
    
