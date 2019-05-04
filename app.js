@@ -304,7 +304,7 @@ Course: SEI-Flex (2019)
     }
     
     fullNewsPath = newsBase + newsQType[0] + fullNewsID + '&' + queryStarter + newsQuery;
-    console.log(fullNewsPath);
+    // console.log(fullNewsPath);
     
     const $pageTitle = $('<h1>').text('News').css({display: 'flex', 'justify-content': 'center', width: '100%'});
     $('.content-container').append($pageTitle).css({display:'flex', 'flex-flow': 'row wrap'})
@@ -396,8 +396,8 @@ Course: SEI-Flex (2019)
   // Next 
     const nextItem = (event) => {
       maxIndex = $('.carousel-container').children().eq(1).children().length-1;
-      console.log(currentIndex);
-      console.log(maxIndex);
+      // console.log(currentIndex);
+      // console.log(maxIndex);
       $('.carousel-container').children().eq(1).children().eq(currentIndex).css({display: 'none'})
       if (currentIndex < maxIndex) {
         currentIndex++;
@@ -412,8 +412,8 @@ Course: SEI-Flex (2019)
   // Previous
     const previousItem = (event) => {
       maxIndex = $('.carousel-container').children().eq(1).children().length-1;
-      console.log(currentIndex);
-      console.log(maxIndex);
+      // console.log(currentIndex);
+      // console.log(maxIndex);
       $('.carousel-container').children().eq(1).children().eq(currentIndex).css({display: 'none'})
       if (currentIndex <= 0) {
         currentIndex = maxIndex;
