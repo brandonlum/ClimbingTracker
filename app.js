@@ -28,7 +28,7 @@ Course: SEI-Flex (2019)
   let fullWeatherPath = weatherBase + queryStarter + inputLocation + `&` + fullWeatherId;
   let fullWeatherPathCurrCoord = weatherBase + latStarter + locationLat + `&` + longStarter + locationLong; 
   let fullWeatherPathForecast = forecastBase + queryStarter + inputLocation + `&` + fullWeatherId;
-
+  
   
   
   // Mountain Project
@@ -95,10 +95,10 @@ Course: SEI-Flex (2019)
       if (currentCond.toLowerCase() == "clear") {
         $weatherIcon = $('<span>').addClass("lnr lnr-sun weather-icon");
       }
-      else if (currentCond.toLowerCase() == "clouds" ) {
+      else if (currentCond.toLowerCase() == "clouds"  || currentCond.toLowerCase() == "haze") {
         $weatherIcon = $('<span>').addClass("lnr lnr-cloud weather-icon");
       }
-      else if (currentCond.toLowerCase() == "rain" || currentCond.toLowerCase() == "mist" || currentCond.toLowerCase() == "drizzle") {
+      else if (currentCond.toLowerCase() == "rain" || currentCond.toLowerCase() == "mist" || currentCond.toLowerCase() == "drizzle" ) {
         $weatherIcon = $('<div>').addClass("lnr lnr-drop weather-icon");
       }
       
@@ -153,25 +153,33 @@ Course: SEI-Flex (2019)
       const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space-around', width: '80%', margin: '0 auto', 'text-align': 'center'});
       
       for (let i = 0; i < weatherData.list.length; i++) {
-        let currentTempFah = convKeltoFah(weatherData.list[i].main.temp);
-        let currentTempCel = convKeltoCel(weatherData.list[i].main.temp);
-        let tempMinFah = convKeltoFah(weatherData.list[i].main.temp_min);
-        let tempMaxFah = convKeltoFah(weatherData.list[i].main.temp_max);
-        let tempMinCel = convKeltoCel(weatherData.list[i].main.temp_min);
-        let tempMaxCel = convKeltoCel(weatherData.list[i].main.temp_max);
-        let weatherDesc = weatherData.list[i].weather.description;
-        let weatherDT = weatherData.list[i].dt_txt;
-        let weatherDate = weatherData.list[i].dt_txt.split(' ')[0];
-        // if (weatherData.list[i].dt_txt.split(' ')[1])
         let weatherTime = weatherData.list[i].dt_txt.split(' ')[1];
+        if (weatherTime == "12:00:00") {
+          let currentTempFah = convKeltoFah(weatherData.list[i].main.temp);
+          let currentTempCel = convKeltoCel(weatherData.list[i].main.temp);
+          let tempMinFah = convKeltoFah(weatherData.list[i].main.temp_min);
+          let tempMaxFah = convKeltoFah(weatherData.list[i].main.temp_max);
+          let tempMinCel = convKeltoCel(weatherData.list[i].main.temp_min);
+          let tempMaxCel = convKeltoCel(weatherData.list[i].main.temp_max);
+          let weatherDesc = weatherData.list[i].weather.description;
+          let weatherDTTXT = weatherData.list[i].dt_txt;
+          let weatherDate = weatherData.list[i].dt_txt.split(' ')[0];
+          // if (weatherData.list[i].dt_txt.split(' ')[1])
+          let currentCond = weatherData.weather[0].main;
+          
+          const $dayContainer = $('<div>').addClass('day-container').attr('id',`forecastDay${weatherDate}`).css({'border': '1px solid black', margin: '5px'});
+          
+          const $currentTempCont = $('<div>').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
+          const $tempMinMax = $('<div>').text(`Low: ${tempMinFah + String.fromCharCode(176)}F/${tempMinCel + String.fromCharCode(176)}C - High: ${tempMaxFah + String.fromCharCode(176)}F/${tempMaxCel + String.fromCharCode(176)}C`);  
+          
+          $($dayContainer).append(weatherDTTXT).append($currentTempCont).append($tempMinMax).append(weatherDesc);
+          $($forecastContainer).append($dayContainer);
+        }
+        else {
+          continue;
+        }
         
-        const $dayContainer = $('<div>').addClass('day-container').attr('id',`forecastDay${weatherDate}`).css({'border': '1px solid black', margin: '5px'});
         
-        const $currentTempCont = $('<div>').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
-        const $tempMinMax = $('<div>').text(`Low: ${tempMinFah + String.fromCharCode(176)}F/${tempMinCel + String.fromCharCode(176)}C - High: ${tempMaxFah + String.fromCharCode(176)}F/${tempMaxCel + String.fromCharCode(176)}C`);  
-        
-        $($dayContainer).append(weatherDT).append($currentTempCont).append($tempMinMax).append(weatherDesc);
-        $($forecastContainer).append($dayContainer);
       }
       $('.content-container').append($forecastContainer);
       $('.poweredby').append(`Powered by: OpenWeatherMap`)
