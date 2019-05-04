@@ -152,7 +152,7 @@ Course: SEI-Flex (2019)
       let currCityName = weatherData.city.name;
       const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize', width: '80%', 'text-align': 'center', margin: '0 auto' });
       $('.content-container').append($city);
-      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space-between', width: '80%', margin: '0 auto', 'text-align': 'center'});
+      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space-between', width: '90%', margin: '0 auto', 'text-align': 'center'});
       
       for (let i = 0; i < weatherData.list.length; i++) {
         let weatherTime = weatherData.list[i].dt_txt.split(' ')[1];
