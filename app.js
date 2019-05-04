@@ -64,6 +64,8 @@ Course: SEI-Flex (2019)
 ////////////////////////////////
 
   // Weather
+  const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  
   const getWeather = (currLocation, displayLocation) => {
     let $weatherIcon = '';
     if (displayLocation == 3) {
@@ -93,10 +95,10 @@ Course: SEI-Flex (2019)
       locationLong = weatherData.coord.lon;
       
       if (currentCond.toLowerCase() == "clear") {
-        $weatherIcon = $('<span>').addClass("lnr lnr-sun weather-icon");
+        $weatherIcon = $('<div>').addClass("lnr lnr-sun weather-icon");
       }
       else if (currentCond.toLowerCase() == "clouds"  || currentCond.toLowerCase() == "haze") {
-        $weatherIcon = $('<span>').addClass("lnr lnr-cloud weather-icon");
+        $weatherIcon = $('<div>').addClass("lnr lnr-cloud weather-icon");
       }
       else if (currentCond.toLowerCase() == "rain" || currentCond.toLowerCase() == "mist" || currentCond.toLowerCase() == "drizzle" ) {
         $weatherIcon = $('<div>').addClass("lnr lnr-drop weather-icon");
@@ -150,7 +152,7 @@ Course: SEI-Flex (2019)
       let currCityName = weatherData.city.name;
       const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize', width: '80%', 'text-align': 'center', margin: '0 auto' });
       $('.content-container').append($city);
-      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space-around', width: '80%', margin: '0 auto', 'text-align': 'center'});
+      const $forecastContainer = $('<div>').addClass('forecast-container').css({display: 'flex', 'flex-flow': 'row wrap', 'border': '1px solid black', 'justify-content': 'space-between', width: '80%', margin: '0 auto', 'text-align': 'center'});
       
       for (let i = 0; i < weatherData.list.length; i++) {
         let weatherTime = weatherData.list[i].dt_txt.split(' ')[1];
@@ -161,18 +163,31 @@ Course: SEI-Flex (2019)
           let tempMaxFah = convKeltoFah(weatherData.list[i].main.temp_max);
           let tempMinCel = convKeltoCel(weatherData.list[i].main.temp_min);
           let tempMaxCel = convKeltoCel(weatherData.list[i].main.temp_max);
-          let weatherDesc = weatherData.list[i].weather.description;
+          let weatherDesc = weatherData.list[i].weather[0].description;
           let weatherDTTXT = weatherData.list[i].dt_txt;
           let weatherDate = weatherData.list[i].dt_txt.split(' ')[0];
-          // if (weatherData.list[i].dt_txt.split(' ')[1])
-          let currentCond = weatherData.weather[0].main;
+          let currentCond = weatherData.list[i].weather[0].main;
+          let weatherDT = new Date(weatherDTTXT);
+          let weatherDoW = dayOfWeek[weatherDT.getDay()];
           
-          const $dayContainer = $('<div>').addClass('day-container').attr('id',`forecastDay${weatherDate}`).css({'border': '1px solid black', margin: '5px'});
           
-          const $currentTempCont = $('<div>').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
-          const $tempMinMax = $('<div>').text(`Low: ${tempMinFah + String.fromCharCode(176)}F/${tempMinCel + String.fromCharCode(176)}C - High: ${tempMaxFah + String.fromCharCode(176)}F/${tempMaxCel + String.fromCharCode(176)}C`);  
+          if (currentCond.toLowerCase() == "clear") {
+            $weatherIcon = $('<div>').addClass("lnr lnr-sun weather-icon").css({'font-size': '1.5em', 'margin': 'auto'});
+          }
+          else if (currentCond.toLowerCase() == "clouds"  || currentCond.toLowerCase() == "haze") {
+            $weatherIcon = $('<div>').addClass("lnr lnr-cloud weather-icon").css({'font-size': '1.5em', 'margin': 'auto'});
+          }
+          else if (currentCond.toLowerCase() == "rain" || currentCond.toLowerCase() == "mist" || currentCond.toLowerCase() == "drizzle" ) {
+            $weatherIcon = $('<div>').addClass("lnr lnr-drop weather-icon").css({'font-size': '1.5em', 'margin': 'auto'});
+          }
           
-          $($dayContainer).append(weatherDTTXT).append($currentTempCont).append($tempMinMax).append(weatherDesc);
+          const $dayContainer = $('<div>').addClass('day-container').attr('id',`forecastDay${weatherDate}`).html(`${weatherDoW} \n ${weatherDate}`).css({'border': '1px solid black', margin: '5px', padding: '5px', 'white-space': 'pre-wrap'});
+          
+          const $temp = $('<div>').text(`Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
+          const $weatherDesc = $('<div>').text(weatherDesc).css({'text-transform': 'capitalize'})
+          
+          
+          $($dayContainer).append($temp).append($weatherDesc).append($weatherIcon);
           $($forecastContainer).append($dayContainer);
         }
         else {
@@ -353,8 +368,8 @@ Course: SEI-Flex (2019)
     const positionSuccess = (position) => {
       currentPos = position.coords;
       console.log(currentPos.latitude, currentPos.longitude);
-      getWeather(currentPos,3);
       getRoutes(2, currentPos.latitude, currentPos.longitude);
+      getWeather(currentPos,3);
       return currentPos;
     }
     
