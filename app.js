@@ -53,9 +53,9 @@ Course: SEI-Flex (2019)
   const newsBase = `https://newsapi.org/v2/`
   const newsQType = ['everything?','top-headlines?','sources?'];
   const fullNewsID = `apiKey=${window.atob(idArr[2])}`;
-  let newsQuery = 'rock climbing';
-  let fullNewsPath = newsBase + newsQType[0] + fullNewsID + '&' + queryStarter + newsQuery
-  'https://newsapi.org/v2/everything?q=rock climbing&apiKey=0814c87b5f4c4f2a9d0ad4021163f7ae'
+  let newsQuery = 'alpine climbing';
+  let fullNewsPath = newsBase + newsQType[0] + fullNewsID + '&' + queryStarter + newsQuery;
+
 
 
 
@@ -290,11 +290,11 @@ Course: SEI-Flex (2019)
         const $newsTitle = $('<h2>').text(newsTitle);
         const $newsInformation = $('<p>').html(`Author: ${newsAuthor} \n\n ${newsDescription}`).css({'white-space': 'pre-wrap'});
         const $newsContent = $('<p>').html(`${$newsTitle} \n ${newsContent}`).css({'white-space': 'pre-wrap'});
-        
+      
         const $articleContainer = $('<div>').addClass('article-container').attr('id', newsTitle).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em', 'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'});
-        
+      
         // const $articleContainerBack = $('<div>').addClass('article-container-back').attr('id', newsTitle).text(newsContent).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center', 'font-size': '1.2em', 'background-image': `url(${newsImg})`, 'background-blend-mode': 'color', 'background-size': 'cover'});
-        
+      
         $($articleContainer).append($newsTitle).append($newsInformation).append($newsLink)
         $($newsContainer).append($articleContainer)//.append($articleContainerBack)
         // $($newsContainer).on('click', flipCard)
@@ -303,8 +303,8 @@ Course: SEI-Flex (2019)
       $($divPreviousBtn).on('click', previousItem)
       
       $($carouselContainer).append($divPreviousBtn).append($newsContainer).append($divNextBtn);
-      $('.content-container').append($carouselContainer)
-      $('.poweredby').append(`Powered by: NewsAPI`)
+      $('.content-container').append($carouselContainer) // ERROR
+      // $('.poweredby').append(`Powered by: NewsAPI`)
     },
     (error) => {
       console.error(error);
@@ -420,7 +420,7 @@ Course: SEI-Flex (2019)
    navigator.geolocation.getCurrentPosition(positionSuccess);
 
 
-   $('form').on('submit', (event) => {
+   $('.location-container').on('submit', (event) => {
      $('.weather-bar').empty();
      $('.weather-icon').remove();
      event.preventDefault();
@@ -428,6 +428,14 @@ Course: SEI-Flex (2019)
      $('input[type="text"]').val("")
      // console.log($('.weather-bar').eq(0))
    })
+   
+    // $('#searchBar').on('submit', (event) => {
+    //   $('.content-container').empty();
+    //   $('.poweredby').empty();
+    //   event.preventDefault();
+    // })
+   
+   
    
    $('#nav-news').on('click', (event) => {
      $('.content-container').empty();

@@ -64,6 +64,20 @@ nav div {
   width: 70%;
 }
 
+nav form {
+  display: flex;
+  width: 30%;
+}
+
+#searchBar {
+  width: 90%;
+  height: 70%;
+  border-radius: 10px;
+  margin: auto;
+  font-size: 1em;
+}
+
+
 div a {
   font-size: 1.5em;
   border: 1px solid black;
