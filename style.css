@@ -4,6 +4,12 @@ Author: Brandon Lum
 Course: SEI-Flex (2019)
 */
 
+html {
+  -webkit-user-select: none; /* Chrome/Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+}
+
 
 .banner-location-container, .navbar-container, .location-container, .content-container {
   display: flex;
@@ -31,7 +37,7 @@ Course: SEI-Flex (2019)
 }
 
 .weather-bar {
-  font-size: .6em;
+  font-size: 0.7em;
   text-align: center;
   margin: auto;
 }
@@ -93,6 +99,20 @@ div a {
   display: block;
 }
 
+.weather-icon {
+  font-size: 1.5em;
+  padding: 0 10px;
+  position: relative;
+  animation-name: weather-move;
+  animation-duration: 10s;
+  animation-iteration-count: 2;
+}
+
+@keyframes weather-move {
+  0% {transform: rotate(45deg);}
+  50% {transform: rotate(315deg);}
+  100% {transform: rotate(180deg);}
+}
 
 /* @media {
   .navbar-container {

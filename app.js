@@ -56,6 +56,7 @@ Course: SEI-Flex (2019)
 
   // Weather
   const getWeather = (currLocation, displayLocation) => {
+    let $weatherIcon = '';
     if (displayLocation == 3) {
       locationLat = currentPos.latitude;
       locationLong = currentPos.longitude;
@@ -79,6 +80,19 @@ Course: SEI-Flex (2019)
       let tempMaxCel = convKeltoCel(weatherData.main.temp_max);
       let currentCond = weatherData.weather[0].main;
       let currCityName = weatherData.name;
+      locationLat = weatherData.coord.lat;
+      locationLong = weatherData.coord.lon;
+      
+      if (currentCond.toLowerCase() == "clear") {
+        $weatherIcon = $('<span>').addClass("lnr lnr-sun weather-icon");
+      }
+      else if (currentCond.toLowerCase() == "clouds" ) {
+        $weatherIcon = $('<span>').addClass("lnr lnr-cloud weather-icon");
+      }
+      else if (currentCond.toLowerCase() == "rain") {
+        $weatherIcon = $('<span>').addClass("lnr lnr-drop weather-icon");
+      }
+      
       if (displayLocation == 1) {
         const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize'});
         const $currentTempCont = $('<div>').text(`Current Temp: ${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C`);
@@ -88,12 +102,14 @@ Course: SEI-Flex (2019)
       else if (displayLocation == 2) {
         const $city = $('<h2>').attr('id','cityName').text(inputLocation).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
         $('.weather-bar').text(`${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C - ${currentCond}`);
-        $('.weather-bar').prepend($city)
+        $('.weather-bar').prepend($weatherIcon).prepend($city)
       }
-      else if (displayLocation == 3) {
+      else if (displayLocation == 3) { // Display in Weather bar
+        
+        
         const $city = $('<h2>').attr('id','cityName').text(currCityName).css({'text-transform': 'capitalize', 'font-size': '0.8em', 'text-align': 'center', 'margin': 'auto'});
         $('.weather-bar').text(`${currentTempFah + String.fromCharCode(176)}F/${currentTempCel + String.fromCharCode(176)}C - ${currentCond}`);
-        $('.weather-bar').prepend($city)
+        $('.weather-bar').prepend($weatherIcon).prepend($city)
       }
     },
     (error) => {
@@ -158,11 +174,12 @@ Course: SEI-Flex (2019)
   
   
   // Mountain Project
-  const getRoutes = (options) => {
+  const getRoutes = (options, lat, lon) => {
     fullMPPathRoutes = mpBase + qGetRoutes + fullMPId + '&' + qRouteIds;
+    currentIndex = 0;
     if (options == 2) {
-      locationLat = currentPos.latitude;
-      locationLong = currentPos.longitude;
+      locationLat = lat;
+      locationLong = lon;
       fullMPPathRoutesLatLong = mpBase + qGetRoutesLatLong + fullMPId + `&` + latStarter + locationLat + `&` + longStarter + locationLong;
       console.log(fullMPPathRoutesLatLong);
     }
@@ -222,12 +239,17 @@ Course: SEI-Flex (2019)
           const $routeInformation = $('<p>').html(`Type: ${routeType} \n Difficulty: ${routeRating} \n Rating: ${routeStars} \n Pitches: ${routePitches} \n Where: ${routeLocations}`).css({'white-space': 'pre-wrap'});
           const $routeImage = $('<img>').attr('src', routeImage).css({'max-width': '80%', 'max-height': '80%'});
           
-          const $routeContainer = $('<div>').addClass('route-card').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `0 auto`, 'text-align': 'center', 'min-height': '500px'});
+          const $routeContainer = $('<div>').addClass('route-card').attr('id', routeName).css({border: `1px solid black`, padding: '10px', margin: `auto`, 'text-align': 'center'});
           $($routeContainer).append($routeName).append($routeInformation).append($routeImage);
           $($climbingContainer).append($routeContainer)
         }
+        $($divNextBtn).on('click', nextRoute)
+        $($divPreviousBtn).on('click', previousRoute)
+        
         $($carouselContainer).append($divPreviousBtn).append($climbingContainer).append($divNextBtn);
         $('.content-container').append($carouselContainer)
+        
+        
 
       },
       (error) => {
@@ -274,8 +296,43 @@ Course: SEI-Flex (2019)
       currentPos = position.coords;
       console.log(currentPos.latitude, currentPos.longitude);
       getWeather(currentPos,3);
-      getRoutes(2);
+      getRoutes(2, currentPos.latitude, currentPos.longitude);
       return currentPos;
+    }
+    
+    
+    let currentIndex = 0;
+    let climbingRoutesMaxIndex = 0;
+    
+  // Next 
+    const nextRoute = (event) => {
+      climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+      console.log(currentIndex);
+      console.log(climbingRoutesMaxIndex);
+      $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
+      if (currentIndex < climbingRoutesMaxIndex) {
+        currentIndex++;
+      }
+      else {
+        currentIndex = 0;
+      }
+      $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
+    }
+  
+  
+  // Previous
+    const previousRoute = (event) => {
+      climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
+      console.log(currentIndex);
+      console.log(climbingRoutesMaxIndex);
+      $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
+      if (currentIndex <= 0) {
+        currentIndex = climbingRoutesMaxIndex;
+      }
+      else {
+        currentIndex--;
+      }
+      $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
     }
     
     
@@ -304,11 +361,6 @@ Course: SEI-Flex (2019)
  $(() => {
    
    navigator.geolocation.getCurrentPosition(positionSuccess);
-   
-   let currentIndex = 0;
-   let climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
-   console.log(currentIndex);
-   console.log(climbingRoutesMaxIndex);
 
 
    $('form').on('submit', (event) => {
@@ -322,37 +374,9 @@ Course: SEI-Flex (2019)
    
    $('#nav-routes').on('click', (event) => {
      $('.content-container').empty();
-     getRoutes(2);
+     getRoutes(2, locationLat, locationLong);
    })
    
-   $($divNextBtn).on('click', (event) => {
-     climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
-     console.log(currentIndex);
-     console.log(climbingRoutesMaxIndex);
-     $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
-     if (currentIndex < climbingRoutesMaxIndex) {
-       currentIndex++;
-     }
-     else {
-       currentIndex = 0;
-     }
-     $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
-   })
-   
-   $($divPreviousBtn).on('click', (event) => {
-     climbingRoutesMaxIndex = $('.climbing-container').children().length-1;
-     console.log(currentIndex);
-     console.log(climbingRoutesMaxIndex);
-     $('.climbing-container').children().eq(currentIndex).css({display: 'none'})
-     if (currentIndex <= 0) {
-       currentIndex = climbingRoutesMaxIndex;
-     }
-     else {
-       currentIndex--;
-     }
-     $('.climbing-container').children().eq(currentIndex).css({display: 'block'})
-   })
-
    
    $('#nav-weather').on('click', (event) => {
      $('.content-container').empty();
