@@ -25,7 +25,7 @@ APIs:
   
 Hosting Solutions:
 * GitHub Pages
-  * https://brandonlum.github.io/WDI-ClimbingProject/index.html
+  * https://brandonlum.github.io/ClimbingTracker/index.html
 
 
 --------
